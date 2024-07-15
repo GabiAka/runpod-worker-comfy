@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Clone ComfyUI repository
-# git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
-
 # Change working directory to ComfyUI
 cd /runpod-volume/ComfyUI
 
@@ -15,6 +12,9 @@ pip3 install facexlib
 pip3 install timm
 pip3 install ftfy
 
+# copy extra
+cd /
+cp extra_model_paths.yaml /runpod-volume/ComfyUI/
 
 # Use libtcmalloc for better memory management
 TCMALLOC="$(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1)"

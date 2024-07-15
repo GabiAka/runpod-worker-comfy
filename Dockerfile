@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     git \
     wget
+	
+# create output folder
+RUN mkdir /output	
 
 # Clean up to reduce image size
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -31,7 +34,7 @@ ADD src/extra_model_paths.yaml /runpod-volume/ComfyUI
 WORKDIR /
 
 # Add the start and the handler
-ADD src/start.sh src/rp_handler.py test_input.json ./
+ADD src/start.sh src/rp_handler.py src/extra_model_paths.yaml test_input.json ./
 RUN chmod +x /start.sh
 
 # Start the container
