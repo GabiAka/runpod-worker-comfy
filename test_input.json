@@ -1,62 +1,296 @@
 {
   "input": {
     "workflow": {
+      "1": {
+        "inputs": {
+          "instantid_file": "ip-adapter.bin"
+        },
+        "class_type": "InstantIDModelLoader",
+        "_meta": {
+          "title": "Load InstantID Model"
+        }
+      },
+      "2": {
+        "inputs": {
+          "provider": "CPU"
+        },
+        "class_type": "InstantIDFaceAnalysis",
+        "_meta": {
+          "title": "InstantID Face Analysis"
+        }
+      },
       "3": {
         "inputs": {
-          "seed": 234234,
-          "steps": 20,
-          "cfg": 8,
-          "sampler_name": "euler",
-          "scheduler": "normal",
-          "denoise": 1,
-          "model": ["4", 0],
-          "positive": ["6", 0],
-          "negative": ["7", 0],
-          "latent_image": ["5", 0]
+          "control_net_name": "dreamshaperXL_lightningDPMSDE.safetensors"
         },
-        "class_type": "KSampler"
+        "class_type": "ControlNetLoader",
+        "_meta": {
+          "title": "Load ControlNet Model"
+        }
       },
       "4": {
         "inputs": {
-          "ckpt_name": "sd_xl_base_1.0.safetensors"
+          "text": "half body, looking at viewer, [1 girl] "
         },
-        "class_type": "CheckpointLoaderSimple"
+        "class_type": "CR Text",
+        "_meta": {
+          "title": "🔤 CR Text"
+        }
       },
       "5": {
         "inputs": {
-          "width": 512,
-          "height": 512,
-          "batch_size": 1
+          "text": "shiny, photo, photography, soft, nsfw, nude, ugly, broken, watermark, oversaturated"
         },
-        "class_type": "EmptyLatentImage"
+        "class_type": "CR Text",
+        "_meta": {
+          "title": "🔤 CR Text"
+        }
       },
       "6": {
         "inputs": {
-          "text": "beautiful scenery nature glass bottle landscape, purple galaxy bottle,",
-          "clip": ["4", 1]
+          "text": ", Sticker, svg, vector art, sharp, kawaii style, Anime style"
         },
-        "class_type": "CLIPTextEncode"
+        "class_type": "CR Text",
+        "_meta": {
+          "title": "🔤 CR Text"
+        }
       },
       "7": {
         "inputs": {
-          "text": "text, watermark",
-          "clip": ["4", 1]
+          "ckpt_name": "dreamshaperXL_lightningDPMSDE.safetensors"
         },
-        "class_type": "CLIPTextEncode"
+        "class_type": "CheckpointLoaderSimple",
+        "_meta": {
+          "title": "Load Checkpoint"
+        }
       },
       "8": {
         "inputs": {
-          "samples": ["3", 0],
-          "vae": ["4", 2]
+          "lora_name": "StickersRedmond.safetensors",
+          "strength_model": 1,
+          "strength_clip": 1,
+          "model": ["7", 0],
+          "clip": ["7", 1]
         },
-        "class_type": "VAEDecode"
+        "class_type": "LoraLoader",
+        "_meta": {
+          "title": "Load LoRA"
+        }
       },
       "9": {
         "inputs": {
-          "filename_prefix": "ComfyUI/test",
-          "images": ["8", 0]
+          "hard_mode": true,
+          "boost": true,
+          "model": ["8", 0]
         },
-        "class_type": "SaveImage"
+        "class_type": "Automatic CFG",
+        "_meta": {
+          "title": "Automatic CFG"
+        }
+      },
+      "10": {
+        "inputs": {
+          "image": "shark Liên 2.jpg",
+          "upload": "image"
+        },
+        "class_type": "LoadImage",
+        "_meta": {
+          "title": "Load Image"
+        }
+      },
+      "11": {
+        "inputs": {
+          "filename_prefix": "ComfyUI",
+          "images": ["12", 0]
+        },
+        "class_type": "SaveImage",
+        "_meta": {
+          "title": "Save Image"
+        }
+      },
+      "12": {
+        "inputs": {
+          "rmbgmodel": ["13", 0],
+          "image": ["18", 5]
+        },
+        "class_type": "BRIA_RMBG_Zho",
+        "_meta": {
+          "title": "🧹BRIA RMBG"
+        }
+      },
+      "13": {
+        "inputs": {},
+        "class_type": "BRIA_RMBG_ModelLoader_Zho",
+        "_meta": {
+          "title": "🧹BRIA_RMBG Model Loader"
+        }
+      },
+      "14": {
+        "inputs": {
+          "delimiter": ", ",
+          "clean_whitespace": "true",
+          "text_a": ["24", 0],
+          "text_b": ["6", 0]
+        },
+        "class_type": "Text Concatenate",
+        "_meta": {
+          "title": "Text Concatenate"
+        }
+      },
+      "17": {
+        "inputs": {
+          "weight": 0.8,
+          "start_at": 0,
+          "end_at": 1,
+          "instantid": ["1", 0],
+          "insightface": ["2", 0],
+          "control_net": ["3", 0],
+          "image": ["21", 0],
+          "model": ["9", 0],
+          "positive": ["27", 0],
+          "negative": ["29", 0],
+          "image_kps": ["22", 5]
+        },
+        "class_type": "ApplyInstantID",
+        "_meta": {
+          "title": "Apply InstantID"
+        }
+      },
+      "18": {
+        "inputs": {
+          "seed": 364844907917747,
+          "steps": 8,
+          "cfg": 4,
+          "sampler_name": "dpmpp_2m_sde",
+          "scheduler": "karras",
+          "denoise": 1,
+          "preview_method": "auto",
+          "vae_decode": "true",
+          "model": ["17", 0],
+          "positive": ["17", 1],
+          "negative": ["17", 2],
+          "latent_image": ["20", 0],
+          "optional_vae": ["7", 2]
+        },
+        "class_type": "KSampler (Efficient)",
+        "_meta": {
+          "title": "KSampler (Efficient)"
+        }
+      },
+      "19": {
+        "inputs": {
+          "text": "smiling"
+        },
+        "class_type": "CR Text",
+        "_meta": {
+          "title": "🔤 CR Text"
+        }
+      },
+      "20": {
+        "inputs": {
+          "width": 1024,
+          "height": 1024,
+          "batch_size": 1
+        },
+        "class_type": "EmptyLatentImage",
+        "_meta": {
+          "title": "Empty Latent Image"
+        }
+      },
+      "21": {
+        "inputs": {
+          "upscale_method": "nearest-exact",
+          "megapixels": 1,
+          "image": ["10", 0]
+        },
+        "class_type": "ImageScaleToTotalPixels",
+        "_meta": {
+          "title": "ImageScaleToTotalPixels"
+        }
+      },
+      "22": {
+        "inputs": {
+          "seed": 378971921426134,
+          "steps": 8,
+          "cfg": 4,
+          "sampler_name": "dpmpp_2m_sde",
+          "scheduler": "karras",
+          "denoise": 1,
+          "preview_method": "auto",
+          "vae_decode": "true",
+          "model": ["26", 0],
+          "positive": ["25", 0],
+          "negative": ["23", 0],
+          "latent_image": ["20", 0],
+          "optional_vae": ["7", 2]
+        },
+        "class_type": "KSampler (Efficient)",
+        "_meta": {
+          "title": "KSampler (Efficient)"
+        }
+      },
+      "23": {
+        "inputs": {
+          "text": ["5", 0],
+          "clip": ["7", 1]
+        },
+        "class_type": "CLIPTextEncode",
+        "_meta": {
+          "title": "CLIP Text Encode (Prompt)"
+        }
+      },
+      "24": {
+        "inputs": {
+          "delimiter": "",
+          "clean_whitespace": "false",
+          "text_a": ["4", 0],
+          "text_b": ["19", 0]
+        },
+        "class_type": "Text Concatenate",
+        "_meta": {
+          "title": "Text Concatenate"
+        }
+      },
+      "25": {
+        "inputs": {
+          "text": ["24", 0],
+          "clip": ["7", 1]
+        },
+        "class_type": "CLIPTextEncode",
+        "_meta": {
+          "title": "CLIP Text Encode (Prompt)"
+        }
+      },
+      "26": {
+        "inputs": {
+          "hard_mode": true,
+          "boost": true,
+          "model": ["7", 0]
+        },
+        "class_type": "Automatic CFG",
+        "_meta": {
+          "title": "Automatic CFG"
+        }
+      },
+      "27": {
+        "inputs": {
+          "text": ["14", 0],
+          "clip": ["8", 1]
+        },
+        "class_type": "CLIPTextEncode",
+        "_meta": {
+          "title": "CLIP Text Encode (Prompt)"
+        }
+      },
+      "29": {
+        "inputs": {
+          "text": ["5", 0],
+          "clip": ["8", 1]
+        },
+        "class_type": "CLIPTextEncode",
+        "_meta": {
+          "title": "CLIP Text Encode (Prompt)"
+        }
       }
     }
   }
