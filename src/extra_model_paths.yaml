@@ -1,4 +1,4 @@
-runpod_worker_comfy:
+comfyui:
   base_path: /runpod-volume
   checkpoints: ComfyUI/models/checkpoint/
   clip: ComfyUI/models/clip/

@@ -3,14 +3,19 @@
 cd /runpod-volume/ComfyUI
 
 # Install ComfyUI dependencies
+pip3 install --upgrade pip
 pip3 install -r requirements.txt
-pip3 install --upgrade pip3
+pip3 install insightface==0.7.3 --force-reinstall
+pip3 install onnxruntime
 pip3 install onnxruntime-gpu
-pip3 install insightface
 pip3 install pyOpenSSL
 pip3 install facexlib
 pip3 install timm
 pip3 install ftfy
+
+#install requirements insightface
+cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID
+pip3 install insightface==0.7.3 --force-reinstall
 
 # copy extra
 cd /
