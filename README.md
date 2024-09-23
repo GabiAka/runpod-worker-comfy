@@ -404,4 +404,5 @@ If you want to use this, you should add these secrets to your repository:
 ## DOCKER
 
 docker build -t quanghuy351994/runpod-worker-comfy:latest --platform linux/amd64 .
+
 docker push quanghuy351994/runpod-worker-comfy:latest

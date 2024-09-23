@@ -16,7 +16,7 @@ pip3 install ftfy
 #install requirements insightface
 cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID
 pip3 install insightface==0.7.3 --force-reinstall
-pip3 install albucore==0.0.16 --force-reinstall
+pip3 install albucore==0.0.17 --force-reinstall
 
 # copy extra
 cd /
