@@ -16,6 +16,7 @@ pip3 install ftfy
 #install requirements insightface
 cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID
 pip3 install insightface==0.7.3 --force-reinstall
+pip3 install simpleeval --force-reinstall
 
 # copy extra
 cd /
