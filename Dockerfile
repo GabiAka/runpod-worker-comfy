@@ -27,6 +27,8 @@ RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 # Install runpod
 RUN pip3 install runpod requests
 
+# Support for the network volume
+ADD src/extra_model_paths.yaml /runpod-volume/ComfyUI
 
 # Go back to the root
 WORKDIR /

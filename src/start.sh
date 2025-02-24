@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Change working directory to ComfyUI
-cd /workspace/ComfyUI
+cd /runpod-volume/ComfyUI
 
 # Install ComfyUI dependencies
 pip3 install --upgrade pip
@@ -14,13 +14,13 @@ pip3 install timm
 pip3 install ftfy
 
 #install requirements insightface
-cd /workspace/ComfyUI/custom_nodes/ComfyUI_InstantID
+cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID
 pip3 install insightface==0.7.3 --force-reinstall
 pip3 install simpleeval --force-reinstall
 
 # copy extra
 cd /
-cp extra_model_paths.yaml /workspace/ComfyUI/
+cp extra_model_paths.yaml /runpod-volume/ComfyUI/
 
 # Use libtcmalloc for better memory management
 TCMALLOC="$(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1)"
@@ -29,13 +29,13 @@ export LD_PRELOAD="${TCMALLOC}"
 # Serve the API and don't shutdown the container
 if [ "$SERVE_API_LOCALLY" == "true" ]; then
     echo "runpod-worker-comfy: Starting ComfyUI"
-    python3 /workspace/ComfyUI/main.py --disable-auto-launch --disable-metadata --listen &
+    python3 /runpod-volume/ComfyUI/main.py --disable-auto-launch --disable-metadata --listen &
 
     echo "runpod-worker-comfy: Starting RunPod Handler"
     python3 -u /rp_handler.py --rp_serve_api --rp_api_host=0.0.0.0
 else
     echo "runpod-worker-comfy: Starting ComfyUI"
-    python3 /workspace/ComfyUI/main.py --disable-auto-launch --disable-metadata &
+    python3 /runpod-volume/ComfyUI/main.py --disable-auto-launch --disable-metadata &
 
     echo "runpod-worker-comfy: Starting RunPod Handler"
     python3 -u /rp_handler.py
