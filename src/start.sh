@@ -3,15 +3,15 @@
 cd /runpod-volume/ComfyUI
 
 # Install ComfyUI dependencies
-pip3 install insightface
-pip3 install onnxruntime
-pip3 install onnxruntime-gpu
+# pip3 install insightface
+# pip3 install onnxruntime
+# pip3 install onnxruntime-gpu
 pip3 install --upgrade pip
-pip3 install pyOpenSSL
+# pip3 install pyOpenSSL
 pip3 install -r requirements.txt
-pip3 install facexlib
-pip3 install --upgrade huggingface-hub
-pip3 install colorama
+# pip3 install facexlib
+# pip3 install --upgrade huggingface-hub
+# pip3 install colorama
 
 #install requirements insightface
 cd /

@@ -1,41 +1,35 @@
 # Use Nvidia CUDA base image
 FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04 as base
 
-# Prevents prompts from packages asking for user input during installation
-ENV DEBIAN_FRONTEND=noninteractive
-# Prefer binary wheels over source distributions for faster pip installations
-ENV PIP_PREFER_BINARY=1
-# Ensures output from python is printed immediately to the terminal without buffering
-ENV PYTHONUNBUFFERED=1 
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_PREFER_BINARY=1 \
+    PYTHONUNBUFFERED=1 
 
-# Install Python, git and other necessary tools
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libgl1 \
-    libglib2.0-0 \
-    python3.10 \
-    python3-pip \
-    git \
-    wget
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.10 python3-pip git wget \
+    build-essential libgl1 libglib2.0-0 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# create output folder
-RUN mkdir /output	
-
-# Clean up to reduce image size
-RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-# Install runpod
-RUN pip3 install runpod requests
-
-# Support for the network volume
-ADD src/extra_model_paths.yaml /runpod-volume/ComfyUI
-
-# Go back to the root
+# Set working directory
 WORKDIR /
 
-# Add the start and the handler
-ADD src/start.sh src/rp_handler.py src/extra_model_paths.yaml test_input.json ./
+# Install Python dependencies in a single layer to improve caching
+RUN pip3 install --no-cache-dir --upgrade pip \
+    && pip3 install --no-cache-dir runpod requests \
+    insightface onnxruntime onnxruntime-gpu pyOpenSSL \
+    facexlib colorama huggingface-hub
+
+# Create output folder
+RUN mkdir /output
+
+# Copy necessary files
+COPY src/extra_model_paths.yaml /runpod-volume/ComfyUI/
+COPY src/start.sh src/rp_handler.py src/extra_model_paths.yaml test_input.json ./
+
+# Ensure start script is executable
 RUN chmod +x /start.sh
 
 # Start the container
-CMD /start.sh
+CMD ["/start.sh"]
