@@ -1,39 +1,32 @@
 #!/usr/bin/env bash
+# Change working directory to ComfyUI
+cd /runpod-volume/ComfyUI
 
-# Chuyển vào thư mục ComfyUI trong volume
-cd /runpod-volume/ComfyUI || exit
+# Install ComfyUI dependencies
+pip3 install --upgrade pip
+pip3 install -r requirements.txt
+pip3 install insightface==0.7.3 --force-reinstall
+pip3 install onnxruntime
+pip3 install onnxruntime-gpu
+pip3 install pyOpenSSL
+pip3 install facexlib
+pip3 install timm
+pip3 install ftfy
 
-# Cài đặt dependencies nếu chưa có
-if [ ! -f "/runpod-volume/ComfyUI/requirements_installed" ]; then
-    echo "Installing ComfyUI dependencies..."
-    pip3 install --upgrade pip
-    pip3 install -r requirements.txt
-    pip3 install insightface==0.7.3 --force-reinstall
-    pip3 install onnxruntime onnxruntime-gpu pyOpenSSL facexlib timm ftfy
+#install requirements insightface
+cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID
+pip3 install insightface==0.7.3 --force-reinstall
+pip3 install albucore==0.0.17 --force-reinstall
 
-    # Cài đặt dependencies cho ComfyUI_InstantID nếu chưa có
-    cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID || exit
-    pip3 install insightface==0.7.3 simpleeval --force-reinstall
+# copy extra
+cd /
+cp extra_model_paths.yaml /runpod-volume/ComfyUI/
 
-    # Đánh dấu đã cài đặt dependencies để không cài lại lần sau
-    touch /runpod-volume/ComfyUI/requirements_installed
-fi
+# Use libtcmalloc for better memory management
+TCMALLOC="$(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1)"
+export LD_PRELOAD="${TCMALLOC}"
 
-# Quay lại thư mục gốc
-cd / || exit
-
-# Copy extra_model_paths.yaml nếu cần
-if [ ! -f "/runpod-volume/ComfyUI/extra_model_paths.yaml" ]; then
-    cp extra_model_paths.yaml /runpod-volume/ComfyUI/
-fi
-
-# Sử dụng libtcmalloc để tối ưu quản lý bộ nhớ
-TCMALLOC="$(ldconfig -p | grep -Po 'libtcmalloc.so.\d' | head -n 1)"
-if [ -n "$TCMALLOC" ]; then
-    export LD_PRELOAD="${TCMALLOC}"
-fi
-
-# Khởi chạy ComfyUI và RunPod Handler
+# Serve the API and don't shutdown the container
 if [ "$SERVE_API_LOCALLY" == "true" ]; then
     echo "runpod-worker-comfy: Starting ComfyUI"
     python3 /runpod-volume/ComfyUI/main.py --disable-auto-launch --disable-metadata --listen &
