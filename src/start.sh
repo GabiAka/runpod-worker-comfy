@@ -14,9 +14,9 @@ pip3 install --upgrade huggingface-hub
 pip3 install colorama
 
 #install requirements insightface
+cd /
 cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID
 pip3 install insightface==0.7.3 --force-reinstall
-pip3 install albucore==0.0.17 --force-reinstall
 
 # copy extra
 cd /
