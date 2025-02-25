@@ -17,6 +17,7 @@ pip3 install colorama
 cd /
 cd /runpod-volume/ComfyUI/custom_nodes/ComfyUI_InstantID
 pip3 install insightface==0.7.3 --force-reinstall
+pip3 install simpleeval --force-reinstall
 
 # copy extra
 cd /
