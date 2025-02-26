@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.10 python3-pip git wget \
+    python3 python3-pip python3-dev python3-venv git wget \
     build-essential libgl1 libglib2.0-0 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -16,10 +16,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /
 
 # Install Python dependencies in a single layer to improve caching
-RUN pip3 install --no-cache-dir --upgrade pip \
-    && pip3 install --no-cache-dir runpod requests \
-    insightface onnxruntime onnxruntime-gpu pyOpenSSL \
-    facexlib colorama huggingface-hub
+RUN pip3 install --no-cache-dir --upgrade pip
+RUN pip3 install --no-cache-dir --upgrade setuptools wheel
+RUN pip3 install --no-cache-dir insightface==0.7.3 --force-reinstall
+RUN pip3 install --no-cache-dir onnxruntime
+RUN pip3 install --no-cache-dir onnxruntime-gpu
+RUN pip3 install --no-cache-dir runpod
+RUN pip3 install --no-cache-dir requests
+RUN pip3 install --no-cache-dir pyOpenSSL
+RUN pip3 install --no-cache-dir facexlib
+RUN pip3 install --no-cache-dir colorama
+RUN pip3 install --no-cache-dir huggingface-hub
 
 # Create output folder
 RUN mkdir /output
